@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "flood_exercise"
+  site-url: "https://reutkeller.github.io/flood_exercise"
+  description: "exercise flood"
+  repo-branch: main
+  repo-url: "https://github.com/reutkeller/flood_exercise"
