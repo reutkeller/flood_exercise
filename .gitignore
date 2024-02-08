@@ -1,8 +1,9 @@
 .venv
-
+*.json
 _docs/
 _proc/
 
+*.tif
 
 *.bak
 .gitattributes
