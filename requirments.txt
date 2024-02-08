@@ -1,2 +1,9 @@
 jupyterlab
 nbdev==2.3.12
+google-cloud
+google-cloud-storage
+oauth2client
+pandas
+numpy
+rasterio
+scipy
