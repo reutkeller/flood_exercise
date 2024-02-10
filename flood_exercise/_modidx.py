@@ -5,4 +5,7 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://reutkeller.github.io',
                 'git_url': 'https://github.com/reutkeller/flood_exercise',
                 'lib_path': 'flood_exercise'},
-  'syms': {'flood_exercise.core': {'flood_exercise.core.foo': ('core.html#foo', 'flood_exercise/core.py')}}}
+  'syms': { 'flood_exercise.const_vals': {},
+            'flood_exercise.core': {'flood_exercise.core.foo': ('core.html#foo', 'flood_exercise/core.py')},
+            'flood_exercise.utils_func': { 'flood_exercise.utils_func.load_tif_paths': ( 'utilities.html#load_tif_paths',
+                                                                                         'flood_exercise/utils_func.py')}}}
