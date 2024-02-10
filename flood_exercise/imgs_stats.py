@@ -8,6 +8,7 @@ import rasterio
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
+from tqdm import tqdm
 from . import utils_func
 from . import const_vals as CONST
 
@@ -20,15 +21,7 @@ class ImgsStatistics():
       
       # get the tiles paths
       self.list_of_files = utils_func.load_tif_paths(path_to_imgs)
-
-      self.collect_results = {CONST.PATH_STR : [] , CONST.REGION_STR : []}
-
-      for path in self.list_of_files:
-         region = self._get_region_name_(path)
-         self.collect_results[CONST.PATH_STR] = path
-         self.collect_results[CONST.REGION_STR]=region
-
-      self._img_statistics_(path)
+      self._iterate_tiles_()
 
 
   def _get_region_name_(self,
@@ -43,8 +36,7 @@ class ImgsStatistics():
      Returns:
      string: Name of the region , extracted from the tile name 
      """
-     
-     region = tile_name.split(CONST.SPLIT_TILES_NAMES_STR)[0]
+     region = tile_name.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[0]
      return region
   
 
@@ -53,28 +45,64 @@ class ImgsStatistics():
                        path : str , # path to image (tif file)
                        ):
      
-     src = rasterio.open(path)
-     src_arr = src.read()
-     band_names = list(src.descriptions)
+     with rasterio.open(path) as src:
+      
+      src_arr = src.read()
 
-     self.bands_stats = {CONST.STR_BAND_NAME : [] , CONST.STR_MEAN : [] , CONST.STR_STD : [] }
+      #convert 0 to nan , assuming 0 is no value and we don't want it to interrupt the staitistics
+      src_arr  = np.where(src_arr==0, np.nan, src_arr )
+      band_names = list(src.descriptions)
 
-     for band_name , index in zip(band_names,range(0,src.read().shape[0])):
-        
-        arr = src_arr[index,:,:]
+      collect_bands_stats = {}
 
-        #convert 0 to nan , assuming 0 is no value and we don't want it to interrupt the staitistics
-        arr = np.where(src_arr==0, np.nan, arr)
+      for band_name , index in zip(band_names,range(0,src.read().shape[0])):
+         self.bands_stats_imgs = {CONST.STR_BAND_NAME : [] , CONST.STR_MEAN : [] , CONST.STR_STD : [] }
+         arr = src_arr[index,:,:]
 
-        #calculate mean
-        mean = np.nanmean(arr)
+         #calculate mean
+         mean = np.nanmean(arr)
+         
+         #calculate std
+         std = np.nanstd(arr)
 
-        #calculate std
-        std = np.nanstd(arr)
+         collect_bands_stats[band_name +'_' + CONST.STR_MEAN] = mean
+         collect_bands_stats[band_name +'_' + CONST.STR_STD] = std
+         
+   
+     df_img_stats = pd.DataFrame.from_dict([collect_bands_stats])
 
-        self.bands_stats[CONST.STR_BAND_NAME] = band_name
-        self.bands_stats[CONST.STR_MEAN] = mean
-        self.bands_stats[CONST.STR_STD] = std
+     return df_img_stats
+
+
+  def _iterate_tiles_(self):
+   
+   self.collect_info = {CONST.PATH_STR : [] , CONST.REGION_STR : []}
+   self.collect_stats = []
+
+   for path in tqdm(self.list_of_files):
+      #get the region name using the get_region_name function
+      region = self._get_region_name_(path)
+      
+      #collect the regn name and the path for the final table
+      self.collect_info[CONST.PATH_STR].append(path)
+      self.collect_info[CONST.REGION_STR].append(region)
+         
+      #get the image statistics
+      df_img_stats = self._img_statistics_(path)
+      self.collect_stats.append(df_img_stats)
+
+   #organize datasets
+   #organize the region info
+   df1 = pd.DataFrame(self.collect_info)
+   #ordanize the stats
+   df2 = pd.concat(self.collect_stats)
+   df2.reset_index(inplace=True)
+   #cocatenate
+   self.results = pd.concat([df1,df2],axis=1)
+
+
+
+
 
 
 
