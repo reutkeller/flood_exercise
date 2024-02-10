@@ -7,7 +7,7 @@ __all__ = ['ImgsStatistics']
 import rasterio
 import numpy as numpy
 import pandas as pd
-
+import matplotlib.pyplot as plt 
 from . import utils_func
 from . import const_vals as CONST
 
@@ -18,9 +18,28 @@ class ImgsStatistics():
       path_to_imgs : str , # path to the folder that contains the images
       ):
       
+      # get the tiles paths
       self.list_of_files = utils_func.load_tif_paths(path_to_imgs)
-      print(len(self.list_of_files))
 
+      self.collect_results = {CONST.PATH_STR : [] , CONST.REGION_STR : []}
+
+      for path in self.list_of_files:
+         region = self._get_region_name_(path)
+         self.collect_results[CONST.PATH_STR] = path
+         self.collect_results[CONST.REGION_STR]=region
+
+
+  def _get_region_name_(self,
+                        path : str , # path of image , assuming that the first word in the file name is the region name
+                        ):
+     
+     region = path.split(CONST.SPLIT_TILES_NAMES_STR)[0]
+
+
+     return region
+     
+
+     
 
 
     
