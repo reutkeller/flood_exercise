@@ -13,16 +13,16 @@ def load_tif_paths(
     tif_path : str , # path to the folder where all the tifs are located
     )-> list :
 
-    # """
-    # Takes a folder path containing TIFF files and returns a list of paths
-    # that can be read by rasterio.
+    """
+    Takes a folder path containing TIFF files and returns a list of paths
+    that can be read by rasterio.
 
-    # Parameters:
-    #     folder_path (str): The path to the folder containing TIFF files.
+    Parameters:
+        folder_path (str): The path to the folder containing TIFF files.
 
-    # Returns:
-    #     list: A list of paths that can be read by rasterio.
-    # """
+    Returns:
+        list: A list of paths that can be read by rasterio.
+    """
     path_list = []
     for file in glob.glob(tif_path+'/'+CONST.GET_TIF_STR):
         path_list.append(file)
