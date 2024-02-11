@@ -5,6 +5,7 @@ __all__ = ['ndwi']
 
 # %% ../nbs/NDWI.ipynb 3
 import rasterio
+import matplotlib.pyplot as plt 
 
 from . import utils_func
 from . import const_vals as CONST
@@ -19,9 +20,14 @@ class ndwi():
      # get list of tif files
      self.list_of_files = utils_func.load_list_paths(path_to_imgs,filter_file = True)
 
-     self.ndwi_img = self._calc_ndwi_s2_(self.list_of_files[0])
-     
-  def _calc_ndwi_s2_(self ,
+     # calculate NDWI per image
+
+     for path in self.list_of_file:
+         self.ndwi_img = self._ndwi_s2_(path)
+  
+     #TODO : understand what should be the output - masked image ? 
+         
+  def _ndwi_s2_(self ,
                      path):
          
          with rasterio.open(path) as src:
