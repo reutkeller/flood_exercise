@@ -13,9 +13,11 @@ d = { 'settings': { 'branch': 'main',
                                                                                                   'flood_exercise/imgs_stats.py'),
                                            'flood_exercise.imgs_stats.ImgsStatistics._get_region_name_': ( 'statistics.html#imgsstatistics._get_region_name_',
                                                                                                            'flood_exercise/imgs_stats.py'),
+                                           'flood_exercise.imgs_stats.ImgsStatistics._get_split_data_': ( 'statistics.html#imgsstatistics._get_split_data_',
+                                                                                                          'flood_exercise/imgs_stats.py'),
                                            'flood_exercise.imgs_stats.ImgsStatistics._img_statistics_': ( 'statistics.html#imgsstatistics._img_statistics_',
                                                                                                           'flood_exercise/imgs_stats.py'),
                                            'flood_exercise.imgs_stats.ImgsStatistics._iterate_tiles_': ( 'statistics.html#imgsstatistics._iterate_tiles_',
                                                                                                          'flood_exercise/imgs_stats.py')},
-            'flood_exercise.utils_func': { 'flood_exercise.utils_func.load_tif_paths': ( 'utilities.html#load_tif_paths',
-                                                                                         'flood_exercise/utils_func.py')}}}
+            'flood_exercise.utils_func': { 'flood_exercise.utils_func.load_list_paths': ( 'utilities.html#load_list_paths',
+                                                                                          'flood_exercise/utils_func.py')}}}

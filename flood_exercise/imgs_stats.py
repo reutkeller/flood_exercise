@@ -9,19 +9,50 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
 from tqdm import tqdm
+import itertools as it
+
 from . import utils_func
 from . import const_vals as CONST
+
 
 # %% ../nbs/statistics.ipynb 4
 class ImgsStatistics():
 
   def __init__(self,
       path_to_imgs : str , # path to the folder that contains the images
+      path_to_split_file : str , # path to the folder that contains the split data
       ):
       
+      # get the path to the split files
+      self.path_to_split_file = utils_func.load_list_paths(path_to_split_file,filter_file=False)
+
       # get the tiles paths
-      self.list_of_files = utils_func.load_tif_paths(path_to_imgs)
-      self._iterate_tiles_()
+      self.list_of_files = utils_func.load_list_paths(path_to_imgs,filter_file = True)
+      self.results = self._iterate_tiles_()
+
+      #get the split data 
+      self.split_dfs = self._get_split_data_()
+
+  def _get_split_data_(self):
+
+      self.collect_dfs = []
+      for split_path in self.path_to_split_file:
+         # get the split name
+         split_type_str = split_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
+
+         # open the csv file and add column with the split group
+         df = pd.read_csv(split_path,header=None)
+         # to be caution - take the two columns and make one column with all the files names
+         df =pd.DataFrame(sorted(it.chain(*df.values)))
+
+         df.columns = [CONST.DF_ID_COL_NAME]
+
+         df[CONST.SPLIT_COL_NAME] = split_type_str
+         self.collect_dfs.append(df)
+
+         split_dfs = pd.concat(self.collect_dfs)
+
+      return split_dfs
 
 
   def _get_region_name_(self,
@@ -38,6 +69,7 @@ class ImgsStatistics():
      """
      region = tile_name.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[0]
      return region
+
   
 
   
@@ -71,6 +103,10 @@ class ImgsStatistics():
    
      df_img_stats = pd.DataFrame.from_dict([collect_bands_stats])
 
+     #add names column so we can join between the split type and the image name 
+     df_img_stats[CONST.JOIN_COL_NAME] = df_img_stats[CONST.PATH_STR].str.split(CONST.SPLIT_TILES_NAMES_STR1).str[-1].str.split(CONST.SPLIT_TILES_NAMES_STR2).str[:2].str.join(CONST.SPLIT_TILES_NAMES_STR2)
+
+
      return df_img_stats
 
 
@@ -98,23 +134,7 @@ class ImgsStatistics():
    df2 = pd.concat(self.collect_stats)
    df2.reset_index(inplace=True)
    #cocatenate
-   self.results = pd.concat([df1,df2],axis=1)
+   results = pd.concat([df1,df2],axis=1)
 
-
-
-
-
-
-
-
-
-
-        
-        
-
-        
-
-     
-
-    
+   return results
 
