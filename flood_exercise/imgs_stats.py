@@ -28,10 +28,19 @@ class ImgsStatistics():
 
       # get the tiles paths
       self.list_of_files = utils_func.load_list_paths(path_to_imgs,filter_file = True)
-      self.results = self._iterate_tiles_()
+      self.img_stats_df = self._iterate_tiles_()
 
       #get the split data 
       self.split_dfs = self._get_split_data_()
+
+      # join between the split data and the images stats
+      self.results = self.img_stats_df.merge(self.split_dfs, on=CONST.JOIN_COL_NAME,
+                                        how = 'left').drop_duplicates(subset = CONST.PATH_STR)
+      self.results.drop(CONST.DF_ID_COL_NAME,axis=1,inplace=True)
+
+      self.count_regions = pd.DataFrame(self.results[CONST.REGION_STR].value_counts())
+      self.count_split = pd.DataFrame(self.results[CONST.SPLIT_COL_NAME].value_counts())
+
 
   def _get_split_data_(self):
 
@@ -52,6 +61,9 @@ class ImgsStatistics():
 
          split_dfs = pd.concat(self.collect_dfs)
 
+         split_dfs[CONST.JOIN_COL_NAME]= split_dfs[CONST.DF_ID_COL_NAME].str.split(CONST.SPLIT_TILES_NAMES_STR2).str[:2].str.join(CONST.SPLIT_TILES_NAMES_STR2)
+
+
       return split_dfs
 
 
@@ -69,9 +81,6 @@ class ImgsStatistics():
      """
      region = tile_name.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[0]
      return region
-
-  
-
   
   def _img_statistics_(self,
                        path : str , # path to image (tif file)
@@ -103,10 +112,6 @@ class ImgsStatistics():
    
      df_img_stats = pd.DataFrame.from_dict([collect_bands_stats])
 
-     #add names column so we can join between the split type and the image name 
-     df_img_stats[CONST.JOIN_COL_NAME] = df_img_stats[CONST.PATH_STR].str.split(CONST.SPLIT_TILES_NAMES_STR1).str[-1].str.split(CONST.SPLIT_TILES_NAMES_STR2).str[:2].str.join(CONST.SPLIT_TILES_NAMES_STR2)
-
-
      return df_img_stats
 
 
@@ -135,6 +140,10 @@ class ImgsStatistics():
    df2.reset_index(inplace=True)
    #cocatenate
    results = pd.concat([df1,df2],axis=1)
+   
+   #add names column so we can join between the split type and the image name 
+   results[CONST.JOIN_COL_NAME] = results[CONST.PATH_STR].str.split(CONST.SPLIT_TILES_NAMES_STR1).str[-1].str.split(CONST.SPLIT_TILES_NAMES_STR2).str[:2].str.join(CONST.SPLIT_TILES_NAMES_STR2)
 
    return results
+
 

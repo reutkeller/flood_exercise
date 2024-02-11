@@ -2,9 +2,10 @@
 
 # %% auto 0
 __all__ = ['GET_FILE_STR', 'SPLIT_TILES_NAMES_STR2', 'SPLIT_TILES_NAMES_STR1', 'REGION_STR', 'PATH_STR', 'JOIN_COL_NAME',
-           'STR_BAND_NAME', 'STR_MEAN', 'STR_STD', 'DF_ID_COL_NAME', 'SPLIT_COL_NAME']
+           'STR_BAND_NAME', 'STR_MEAN', 'STR_STD', 'DF_ID_COL_NAME', 'SPLIT_COL_NAME', 'GREEN_BAND', 'NIR_BAND']
 
 # %% ../nbs/CONSTANTS.ipynb 4
+# task 1 constants
 GET_FILE_STR = "*.tif"
 
 SPLIT_TILES_NAMES_STR2 = '_'
@@ -20,3 +21,9 @@ STR_STD = 'std'
 
 DF_ID_COL_NAME = 'id'
 SPLIT_COL_NAME ='split'
+
+# %% ../nbs/CONSTANTS.ipynb 5
+# task 2 constants
+GREEN_BAND =3
+NIR_BAND = 8
+
