@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['GET_FILE_STR', 'SPLIT_TILES_NAMES_STR2', 'SPLIT_TILES_NAMES_STR1', 'REGION_STR', 'PATH_STR', 'JOIN_COL_NAME',
-           'STR_BAND_NAME', 'STR_MEAN', 'STR_STD', 'DF_ID_COL_NAME', 'SPLIT_COL_NAME', 'GREEN_BAND', 'NIR_BAND']
+           'STR_BAND_NAME', 'STR_MEAN', 'STR_STD', 'DF_ID_COL_NAME', 'SPLIT_COL_NAME', 'GREEN_BAND', 'NIR_BAND',
+           'IMG_PATH_WATER_STR', 'WATER_PERC_STR']
 
 # %% ../nbs/CONSTANTS.ipynb 4
 # task 1 constants
@@ -26,4 +27,9 @@ SPLIT_COL_NAME ='split'
 # task 2 constants
 GREEN_BAND =3
 NIR_BAND = 8
+
+# names for water percentage columns
+
+IMG_PATH_WATER_STR = 'img_path'
+WATER_PERC_STR = 'percentage_water'
 

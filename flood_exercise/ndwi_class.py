@@ -5,6 +5,8 @@ __all__ = ['ndwi']
 
 # %% ../nbs/NDWI.ipynb 3
 import rasterio
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt 
 
 from . import utils_func
@@ -19,14 +21,17 @@ class ndwi():
      
      # get list of tif files
      self.list_of_files = utils_func.load_list_paths(path_to_imgs,filter_file = True)
+     self.list_of_files = [x for x in self.list_of_files if 'Bolivia' in x]
+     
+     collector = {CONST.IMG_PATH_WATER_STR : [] , CONST.WATER_PERC_STR : []}
+     # calculate NDWI and NDWI mask per image
+     for path in self.list_of_files:
+         self.ndwi_img ,self.mask , self.perc_water = self._ndwi_s2_(path)
+         collector[CONST.WATER_PERC_STR].append(path)
+         collector[CONST.IMG_PATH_WATER_STR].append(self.perc_water)
 
-     # calculate NDWI per image
-
-     for path in self.list_of_file:
-         self.ndwi_img = self._ndwi_s2_(path)
-  
-     #TODO : understand what should be the output - masked image ? 
-         
+     self.water_perc = pd.DataFrame(collector)
+           
   def _ndwi_s2_(self ,
                      path):
          
@@ -36,7 +41,16 @@ class ndwi():
 
             ndwi = (green - nir) / (green + nir)
 
-         return ndwi
+            # Replace NaN values with 0
+            ndwi = np.nan_to_num(ndwi, nan=-1)
+            # generate mask 
+            mask = np.where(ndwi<0 ,0 ,1)
+
+            #calculate precentage of water pixel out of all the pixels in the image
+            # count_water_pixels = np.sum(mask)
+            # total_pixels = mask.shape[0]*mask.shape[1]
+            perc_water = round((np.sum(mask) / (mask.shape[0]*mask.shape[1]))*100,2)
+         return ndwi , mask ,perc_water
      
 
 

@@ -37,10 +37,11 @@ class ImgsStatistics():
       self.results = self.img_stats_df.merge(self.split_dfs, on=CONST.JOIN_COL_NAME,
                                         how = 'left').drop_duplicates(subset = CONST.PATH_STR)
       self.results.drop(CONST.DF_ID_COL_NAME,axis=1,inplace=True)
+      self.results.reset_index(inplace=True)
 
       self.count_regions = pd.DataFrame(self.results[CONST.REGION_STR].value_counts())
       self.count_split = pd.DataFrame(self.results[CONST.SPLIT_COL_NAME].value_counts())
-
+      
 
   def _get_split_data_(self):
 
@@ -62,7 +63,7 @@ class ImgsStatistics():
          split_dfs = pd.concat(self.collect_dfs)
 
          split_dfs[CONST.JOIN_COL_NAME]= split_dfs[CONST.DF_ID_COL_NAME].str.split(CONST.SPLIT_TILES_NAMES_STR2).str[:2].str.join(CONST.SPLIT_TILES_NAMES_STR2)
-
+         
 
       return split_dfs
 
