@@ -30,9 +30,28 @@ class ndwi():
     #calculate threshold
     self.threshold = self._get_ndwi_threshold_()
 
-    #calculate ndwi and mask with new threshold
-    self.test=self._water_prob_new_imgs_()
+    # iterate through sentinel-2 images , get % of water in label image and S2 image
+    collector = {CONST.WATER_DF_TILE_ID_STR : [],
+                 CONST.WATER_DF_WATER_PERC_STR : [],
+                 CONST.WATER_DF_WATER_PERC_LABEL_STR : [],
+                 CONST.WATER_DF_PATH_STR : []}
+    for s2_path in self.tiles_s2:
+        #find the matching label tile 
+        path_id = s2_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
+        match_label_tile_path = [x for x in self.labels if path_id in x][0]
 
+        #calculate NDWI for S2 image 
+        masked_ndwi,perc_water=self._water_prob_new_img_(path = s2_path)
+
+        #calculate water percentage in label image
+        label_water_perc = self._water_perc_label_img_(path = match_label_tile_path)
+
+        collector[CONST.WATER_DF_TILE_ID_STR] = path_id
+        collector[CONST.WATER_DF_WATER_PERC_STR] = perc_water
+        collector[CONST.WATER_DF_WATER_PERC_LABEL_STR] = label_water_perc
+        collector[CONST.WATER_DF_PATH_STR] = s2_path
+
+    self.water_df = pd.DataFrame(collector)
 
   def _ndwi_s2_(self ,
                      path):
@@ -43,14 +62,7 @@ class ndwi():
 
             ndwi = (green - nir) / (green + nir)
 
-            # Replace NaN values with 0
-            # ndwi = np.nan_to_num(ndwi, nan=-1)
-            # # generate mask 
-            # mask = np.where(ndwi<0 ,0 ,1)
-
-            # #calculate precentage of water pixel out of all the pixels in the image
-            # perc_water = round((np.sum(mask) / (mask.shape[0]*mask.shape[1]))*100,2)
-         return ndwi #, mask ,perc_water
+         return ndwi 
   
 
 
@@ -119,7 +131,8 @@ class ndwi():
         # plt.show()
 
         #calculate precentage of water pixel out of all the pixels in the image
-        perc_water = round((np.sum(masked_ndwi) / (masked_ndwi.shape[0]*masked_ndwi.shape[1]))*100,2)
+        # perc_water = round((np.sum(masked_ndwi) / (masked_ndwi.shape[0]*masked_ndwi.shape[1]))*100,2)
+        perc_water = round(( np.count_nonzero(masked_ndwi == CONST.WATER_VALUE) / (masked_ndwi.shape[0]*masked_ndwi.shape[1]))*100,2)
 
         
         return masked_ndwi,perc_water
@@ -132,16 +145,10 @@ class ndwi():
       with rasterio.open(path) as src:
           #read the image as numpy array
           arr = src.read()
-          #count how many pixels have water flag
-          np.count_nonzero(arr == CONST.WATER_VALUE)
-          
-          
-      
-      
-          
-          
-          
-      
+          # printpercentage of pixels with water flag (value=1)
+          perc_water = round(( np.count_nonzero(arr == CONST.WATER_VALUE) / (arr.shape[0]*arr.shape[1]))*100,2)
+
+      return perc_water
 
      
 
