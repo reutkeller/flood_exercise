@@ -34,5 +34,5 @@ IMG_PATH_WATER_STR = 'img_path'
 WATER_PERC_STR = 'percentage_water'
 
 # Region name to for tile filtering
-REGION_STR_2 = ' Bolivia'
+REGION_STR_2 = 'Bolivia'
 

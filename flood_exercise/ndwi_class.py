@@ -23,11 +23,15 @@ class ndwi():
     self.tiles_s2 = utils_func.load_list_paths(path_to_s2_tiles, filter_file = True)
     self.labels = utils_func.load_list_paths(path_to_labeled_tiles , filter_file = True)
 
-    self._get_ndwi_threshold_()
+
+    # get only tiles from specific region (Bolivia for the task) 
+    self.labels = [x for x in self.labels if CONST.REGION_STR_2 in x]
+
+    #calc threshold
+    self.threshold = self._get_ndwi_threshold_()
 
 
-    # # get only tiles from specific region (Bolivia for the task) 
-    # self.labels = [x for x in self.labels if CONST.REGION_STR_2 in x]
+
 
 
   # #calculate NDWI per pixel 
@@ -65,7 +69,6 @@ class ndwi():
 
 
   def _get_ndwi_threshold_(self,
-                           array : np.array , #numpy array to be checked for min and max values
                            ):
     
        threshold = [None , None]
