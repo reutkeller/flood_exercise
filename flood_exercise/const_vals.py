@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['GET_FILE_STR', 'SPLIT_TILES_NAMES_STR2', 'SPLIT_TILES_NAMES_STR1', 'REGION_STR', 'PATH_STR', 'JOIN_COL_NAME',
            'STR_BAND_NAME', 'STR_MEAN', 'STR_STD', 'DF_ID_COL_NAME', 'SPLIT_COL_NAME', 'GREEN_BAND', 'NIR_BAND',
-           'IMG_PATH_WATER_STR', 'WATER_PERC_STR', 'REGION_STR_2']
+           'IMG_PATH_WATER_STR', 'WATER_PERC_STR', 'REGION_STR_2', 'WATER_VALUE']
 
 # %% ../nbs/CONSTANTS.ipynb 4
 # task 1 constants
@@ -35,4 +35,7 @@ WATER_PERC_STR = 'percentage_water'
 
 # Region name to for tile filtering
 REGION_STR_2 = 'Bolivia'
+
+# water value pixel
+WATER_VALUE = 1
 

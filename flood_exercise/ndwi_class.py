@@ -25,28 +25,14 @@ class ndwi():
 
 
     # get only tiles from specific region (Bolivia for the task) 
-    self.labels = [x for x in self.labels if CONST.REGION_STR_2 in x]
+    self.tiles_s2_for_evaluation = [x for x in self.tiles_s2 if CONST.REGION_STR_2 in x]
 
-    #calc threshold
+    #calculate threshold
     self.threshold = self._get_ndwi_threshold_()
 
+    #calculate ndwi and mask with new threshold
+    self.test=self._water_prob_new_imgs_()
 
-
-
-
-  # #calculate NDWI per pixel 
-    
-  #   for s2_path in self.tiles_s2:
-  #       path_id = s2_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
-  #       self.ndwi_img  = self._ndwi_s2_(s2_path)
-        
-  #       # find the matching label image 
-  #       match_label_tile_path = [x for x in self.labels if path_id in x][0]
-        
-  #       self.match_label_tile = rasterio.open(match_label_tile_path)
-
-
-  
 
   def _ndwi_s2_(self ,
                      path):
@@ -58,7 +44,7 @@ class ndwi():
             ndwi = (green - nir) / (green + nir)
 
             # Replace NaN values with 0
-            ndwi = np.nan_to_num(ndwi, nan=-1)
+            # ndwi = np.nan_to_num(ndwi, nan=-1)
             # # generate mask 
             # mask = np.where(ndwi<0 ,0 ,1)
 
@@ -74,7 +60,7 @@ class ndwi():
        threshold = [None , None]
 
        #for each image , calculate NDWI ,get the match labled image
-       for s2_path in self.tiles_s2:
+       for s2_path in self.tiles_s2_for_evaluation:
           
           #calculate NDWI, get the image id to match with the labels
           path_id = s2_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
@@ -86,26 +72,81 @@ class ndwi():
 
           #create water mask : change -1 to 0 
           water_mask = np.where(match_label_tile == -1, 0, match_label_tile)
+          ndwi_img = np.where(ndwi_img == -1, np.NaN , ndwi_img)
 
           #multiply water_mask with NDWI :
           mask_ndwi = ndwi_img * water_mask
+
+          # plt.imshow(mask_ndwi)
+          # plt.title(path_id)
+          # plt.show()
           
           #caluclate the min and max 
-          min_val = mask_ndwi.min()
-          max_val = mask_ndwi.max()
+          min_val = np.nanmin(mask_ndwi)
+          max_val = np.nanmax(mask_ndwi)
+
 
           if threshold[0] is None or min_val < threshold[0]:
               threshold[0] = min_val
           if threshold[1] is None or max_val > threshold[1]:
               threshold[1] = max_val
 
+          # print(f' current threshold : {threshold} , path: {path_id}')
+
 
        return threshold
+
+
+
+  def _water_prob_new_img_(self,
+                           path : str , # path to raster image
+                           ):
+
+        #calcualte NDWI
+        ndwi = self._ndwi_s2_(path)
+
+        # mask the image to get only water pixels based on threshold
+        mask_with_threshold_condition = (ndwi > self.threshold[0]) & (ndwi < 0)
+
+        # masked_ndwi = np.where(mask_with_threshold_condition, 0 , 1)
+        masked_ndwi = np.where(mask_with_threshold_condition, 0 , ndwi)
+        masked_ndwi = np.nan_to_num(masked_ndwi, nan=0)
+        masked_ndwi = np.where(masked_ndwi==0, 0 , 1)
+        
+        # plt.imshow(masked_ndwi)
+        # plt.title(s2_path)
+        # plt.colorbar()
+        # plt.show()
+
+        #calculate precentage of water pixel out of all the pixels in the image
+        perc_water = round((np.sum(masked_ndwi) / (masked_ndwi.shape[0]*masked_ndwi.shape[1]))*100,2)
+
+        
+        return masked_ndwi,perc_water
+  
+
+  def _water_perc_label_img_(self,
+                             path : str , # path to labeled image
+                             ):
+      
+      with rasterio.open(path) as src:
+          #read the image as numpy array
+          arr = src.read()
+          #count how many pixels have water flag
+          np.count_nonzero(arr == CONST.WATER_VALUE)
+          
+          
+      
+      
+          
+          
+          
+      
 
      
 
 
-# %% ../nbs/NDWI.ipynb 8
+# %% ../nbs/NDWI.ipynb 12
 class ndwi():
 
   def __init__(self,
