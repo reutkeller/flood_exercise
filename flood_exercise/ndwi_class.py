@@ -23,13 +23,26 @@ class ndwi():
     self.tiles_s2 = utils_func.load_list_paths(path_to_s2_tiles, filter_file = True)
     self.labels = utils_func.load_list_paths(path_to_labeled_tiles , filter_file = True)
 
-  #calculate NDWI per pixel 
+    self._get_ndwi_threshold_()
+
+
+    # # get only tiles from specific region (Bolivia for the task) 
+    # self.labels = [x for x in self.labels if CONST.REGION_STR_2 in x]
+
+
+  # #calculate NDWI per pixel 
     
-    for s2_path in self.tiles_s2:
-        self.ndwi_img  = self._ndwi_s2_(s2_path)
-
+  #   for s2_path in self.tiles_s2:
+  #       path_id = s2_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
+  #       self.ndwi_img  = self._ndwi_s2_(s2_path)
         
+  #       # find the matching label image 
+  #       match_label_tile_path = [x for x in self.labels if path_id in x][0]
+        
+  #       self.match_label_tile = rasterio.open(match_label_tile_path)
 
+
+  
 
   def _ndwi_s2_(self ,
                      path):
@@ -48,10 +61,48 @@ class ndwi():
             # #calculate precentage of water pixel out of all the pixels in the image
             # perc_water = round((np.sum(mask) / (mask.shape[0]*mask.shape[1]))*100,2)
          return ndwi #, mask ,perc_water
+  
+
+
+  def _get_ndwi_threshold_(self,
+                           array : np.array , #numpy array to be checked for min and max values
+                           ):
+    
+       threshold = [None , None]
+
+       #for each image , calculate NDWI ,get the match labled image
+       for s2_path in self.tiles_s2:
+          
+          #calculate NDWI, get the image id to match with the labels
+          path_id = s2_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
+          ndwi_img  = self._ndwi_s2_(s2_path)
+
+          # match labeled image
+          match_label_tile_path = [x for x in self.labels if path_id in x][0]
+          match_label_tile = rasterio.open(match_label_tile_path).read(1)  
+
+          #create water mask : change -1 to 0 
+          water_mask = np.where(match_label_tile == -1, 0, match_label_tile)
+
+          #multiply water_mask with NDWI :
+          mask_ndwi = ndwi_img * water_mask
+          
+          #caluclate the min and max 
+          min_val = mask_ndwi.min()
+          max_val = mask_ndwi.max()
+
+          if threshold[0] is None or min_val < threshold[0]:
+              threshold[0] = min_val
+          if threshold[1] is None or max_val > threshold[1]:
+              threshold[1] = max_val
+
+
+       return threshold
+
      
 
 
-# %% ../nbs/NDWI.ipynb 5
+# %% ../nbs/NDWI.ipynb 8
 class ndwi():
 
   def __init__(self,
