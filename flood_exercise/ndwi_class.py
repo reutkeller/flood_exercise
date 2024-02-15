@@ -16,6 +16,45 @@ from . import const_vals as CONST
 class ndwi():
 
   def __init__(self,
+               path_to_s2_tiles : str , #path to the folder that contains the S2 images
+               path_to_labeled_tiles : str , #path to the labled images (values -1,0,1)
+               ):
+    # get the list of tiles from each folder , get only files end with .tif
+    self.tiles_s2 = utils_func.load_list_paths(path_to_s2_tiles, filter_file = True)
+    self.labels = utils_func.load_list_paths(path_to_labeled_tiles , filter_file = True)
+
+  #calculate NDWI per pixel 
+    
+    for s2_path in self.tiles_s2:
+        self.ndwi_img  = self._ndwi_s2_(s2_path)
+
+        
+
+
+  def _ndwi_s2_(self ,
+                     path):
+         
+         with rasterio.open(path) as src:
+            green = src.read(CONST.GREEN_BAND)
+            nir = src.read(CONST.NIR_BAND)
+
+            ndwi = (green - nir) / (green + nir)
+
+            # Replace NaN values with 0
+            ndwi = np.nan_to_num(ndwi, nan=-1)
+            # # generate mask 
+            # mask = np.where(ndwi<0 ,0 ,1)
+
+            # #calculate precentage of water pixel out of all the pixels in the image
+            # perc_water = round((np.sum(mask) / (mask.shape[0]*mask.shape[1]))*100,2)
+         return ndwi #, mask ,perc_water
+     
+
+
+# %% ../nbs/NDWI.ipynb 5
+class ndwi():
+
+  def __init__(self,
       path_to_imgs : str , # path to the folder that contains the images
       ):
      
@@ -27,8 +66,8 @@ class ndwi():
      # calculate NDWI and NDWI mask per image
      for path in self.list_of_files:
          self.ndwi_img ,self.mask , self.perc_water = self._ndwi_s2_(path)
-         collector[CONST.WATER_PERC_STR].append(path)
-         collector[CONST.IMG_PATH_WATER_STR].append(self.perc_water)
+         collector[CONST.IMG_PATH_WATER_STR].append(path)
+         collector[CONST.WATER_PERC_STR].append(self.perc_water)
 
      self.water_perc = pd.DataFrame(collector)
            

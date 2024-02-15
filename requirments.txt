@@ -8,4 +8,4 @@ pandas
 numpy
 rasterio
 scipy
-tensorflow
+https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
