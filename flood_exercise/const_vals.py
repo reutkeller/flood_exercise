@@ -43,5 +43,5 @@ WATER_VALUE = 1
 WATER_DF_TILE_ID_STR = 'tile_id'
 WATER_DF_PATH_STR = 'path'
 WATER_DF_WATER_PERC_STR = 'water_perc'
-WATER_DF_WATER_PERC_LABEL_STR = 'water_str_label'
+WATER_DF_WATER_PERC_LABEL_STR = 'water_label_perc'
 

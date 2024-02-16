@@ -1,3 +1,4 @@
+tensorflow
 ipykernel
 jupyterlab
 nbdev==2.3.12
@@ -8,4 +9,3 @@ pandas
 numpy
 rasterio
 scipy
-https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl

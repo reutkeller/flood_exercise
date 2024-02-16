@@ -46,10 +46,10 @@ class ndwi():
         #calculate water percentage in label image
         label_water_perc = self._water_perc_label_img_(path = match_label_tile_path)
 
-        collector[CONST.WATER_DF_TILE_ID_STR] = path_id
-        collector[CONST.WATER_DF_WATER_PERC_STR] = perc_water
-        collector[CONST.WATER_DF_WATER_PERC_LABEL_STR] = label_water_perc
-        collector[CONST.WATER_DF_PATH_STR] = s2_path
+        collector[CONST.WATER_DF_TILE_ID_STR].append(path_id)
+        collector[CONST.WATER_DF_WATER_PERC_STR].append(perc_water)
+        collector[CONST.WATER_DF_WATER_PERC_LABEL_STR].append(label_water_perc)
+        collector[CONST.WATER_DF_PATH_STR].append(s2_path)
 
     self.water_df = pd.DataFrame(collector)
 
@@ -144,7 +144,7 @@ class ndwi():
       
       with rasterio.open(path) as src:
           #read the image as numpy array
-          arr = src.read()
+          arr = src.read(1)
           # printpercentage of pixels with water flag (value=1)
           perc_water = round(( np.count_nonzero(arr == CONST.WATER_VALUE) / (arr.shape[0]*arr.shape[1]))*100,2)
 
