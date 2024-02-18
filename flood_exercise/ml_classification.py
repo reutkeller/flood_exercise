@@ -7,7 +7,8 @@ __all__ = ['classification_pixels']
 import rasterio
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split,RandomizedSearchCV
+import xgboost
 # import geopandas as gpd
 # import matplotlib.pyplot as plt
 
@@ -35,8 +36,22 @@ class classification_pixels():
     self.path_labels = utils_func.load_list_paths(path = path_labels_str , filter_file = True)
     self.path_imgs = utils_func.load_list_paths(path = path_imgs_str , filter_file= True)
 
+
+    #collect pixels into dataframe 
+    self.df_res = self._collect_pixels_to_dataframe_()
+
+    # split into train and test data for ML model
+    self.x_train, self.x_test, self.y_train, self.y_test=self._prepare_dataframe_for_train_()
+
+    self._train_ml_classification_()
+
+
+
+  def _collect_pixels_to_dataframe_(self):
     dfs_pixels = []
-    for label_path in self.path_labels:
+
+    #TODO remove the 3!
+    for label_path in self.path_labels[:3]:
       id_path = label_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
       
       #find the matching S2 image
@@ -48,9 +63,7 @@ class classification_pixels():
         cols = rasterio.open(s2_img_path[0]).descriptions + rasterio.open(label_path).descriptions
         cols = [str(x) for x in cols]
         label_img = rasterio.open(label_path).read()
-        
 
-        # Stack the imags 
         stacked_img = np.concatenate((s2_img, label_img), axis=0)
         
         df_pixels = pd.DataFrame(stacked_img.reshape([stacked_img.shape[0],-1]).T)
@@ -59,36 +72,56 @@ class classification_pixels():
 
       else:
         continue
+      
+      
+      df_res = pd.concat(dfs_pixels)
 
-    self.df_res = pd.concat(dfs_pixels)
+      return df_res
     
-
-    self._prepare_dataframe_for_train_()
-
-    self.x_train, self.x_test, self.y_train, self.y_test = self._prepare_dataframe_for_train_()
-
-
   
   def _prepare_dataframe_for_train_(self):
     
+    #drop columns that are not relevant for the training (defined by user)
+    
+    if self.cols_to_drop[0] != None:
 
-    if self.cols_to_drop[0] != None :
-      self.cols_to_drop=self.df_res.drop(self.cols_to_drop,axis=1)
+      try:
+        self.df_res=self.df_res.drop(self.cols_to_drop,axis=1)
+
+      except Exception as e:
+        print(f'Could not drop the columns {self.cols_to_drop} with error:{e}')
+        
 
     #drop null values
-    self.df_res.dropna(inplace=True)
+    self.df_res.dropna(axis=0,inplace=True)
 
     x = self.df_res.drop(self.target_col,axis=1)
     y = self.df_res[self.target_col].values
-    print('I have x and y')
     
-
     x_train, x_test, y_train, y_test = train_test_split(x, y, 
                                                         test_size = self.test_size, 
                                                         random_state = self.random_state)
 
     return x_train, x_test, y_train, y_test
     
+
+  def _train_ml_classification_(self):
+    classifier = xgboost.XGBClassifier()
+    
+    XGB_random = RandomizedSearchCV(estimator = classifier, 
+                                   param_distributions = self.RANDOM_GRID_XGB,
+                                   n_iter = CONST.N_ITERATIONS_XGB,
+                                   cv = CONST.CV_XGB, 
+                                   verbose=CONST.VERBOSE , 
+                                   random_state=CONST.RANDOM_STATE , 
+                                   n_jobs = CONST.N_JOBS)
+                   
+    #fit model 
+    XGB_random.fit(self.x_train, self.y_train)
+
+  #best params
+    self.best_params = XGB_random.best_params_
+    print(f'best params : {self.best_params}')
 
 
     

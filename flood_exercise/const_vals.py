@@ -4,7 +4,8 @@
 __all__ = ['GET_FILE_STR', 'SPLIT_TILES_NAMES_STR2', 'SPLIT_TILES_NAMES_STR1', 'REGION_STR', 'PATH_STR', 'JOIN_COL_NAME',
            'STR_BAND_NAME', 'STR_MEAN', 'STR_STD', 'DF_ID_COL_NAME', 'SPLIT_COL_NAME', 'GREEN_BAND', 'NIR_BAND',
            'IMG_PATH_WATER_STR', 'WATER_PERC_STR', 'REGION_STR_2', 'WATER_VALUE', 'WATER_DF_TILE_ID_STR',
-           'WATER_DF_PATH_STR', 'WATER_DF_WATER_PERC_STR', 'WATER_DF_WATER_PERC_LABEL_STR', 'RANDOM_STATE', 'TEST_SIZE']
+           'WATER_DF_PATH_STR', 'WATER_DF_WATER_PERC_STR', 'WATER_DF_WATER_PERC_LABEL_STR', 'RANDOM_STATE', 'TEST_SIZE',
+           'N_JOBS', 'VERBOSE', 'N_ITERATIONS_XGB', 'CV_XGB', 'RANDOM_GRID_XGB']
 
 # %% ../nbs/01CONSTANTS.ipynb 4
 # task 1 constants
@@ -44,5 +45,19 @@ WATER_DF_TILE_ID_STR = 'tile_id'
 WATER_DF_PATH_STR = 'path'
 WATER_DF_WATER_PERC_STR = 'water_perc'
 WATER_DF_WATER_PERC_LABEL_STR = 'water_label_perc'
+
 RANDOM_STATE= 42
 TEST_SIZE = 25
+N_JOBS = -1 
+VERBOSE = 1
+N_ITERATIONS_XGB = 100
+CV_XGB = 5
+
+RANDOM_GRID_XGB = {
+    "n_estimators": [100,300,500],
+    "eta" : [0.3 , 0.5, 0.8 ,1],
+    "gamma":[0.01, 0.1, 1, 5],
+    "max_deth" : [4, 6, 10],
+    "alpha":[0,0.01, 0.1, 0.5],
+    "learning_rate":[0.01, 0.1, 0.5, 1],
+    }
