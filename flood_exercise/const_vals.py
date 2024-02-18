@@ -57,7 +57,7 @@ RANDOM_GRID_XGB = {
     "n_estimators": [100,300,500],
     "eta" : [0.3 , 0.5, 0.8 ,1],
     "gamma":[0.01, 0.1, 1],
-    "max_deth" : [4, 6],
+    "max_depth" : [4, 6],
     "alpha":[0,0.1, 0.5],
     "learning_rate":[0.01, 0.1, 0.5],
     }

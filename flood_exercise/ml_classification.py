@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split,RandomizedSearchCV
 import xgboost
-# import geopandas as gpd
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, auc,ConfusionMatrixDisplay
 
 
 from . import utils_func
@@ -45,7 +45,10 @@ class classification_pixels():
     # split into train and test data for ML model
     self.x_train, self.x_test, self.y_train, self.y_test=self._prepare_dataframe_for_train_()
 
-    self._train_ml_classification_()
+    self.best_model = self._train_ml_classification_()
+
+    self._evaluate_classification()
+
 
 
 
@@ -128,6 +131,62 @@ class classification_pixels():
   #best params
     self.best_params = XGB_random.best_params_
     print(f'best params : {self.best_params}')
+
+    best_model =xgboost.XGBClassifier(**self.best_params)
+
+    best_model.fit(self.x_train, self.y_train)
+
+
+    return best_model
+  
+  def _evaluate_classification(self):
+    
+    y_pred = self.best_model.predict(self.x_test)
+
+    # Calculate accuracy
+    accuracy = accuracy_score(self.y_test, y_pred)
+    print("Accuracy:", accuracy)
+
+    # # Calculate confusion matrix
+    # cm = confusion_matrix(self.y_test, y_pred)
+    # print("Confusion Matrix:")
+    # print(cm)
+
+    #    # Calculate sensitivity and specificity
+    # tn, fp, fn, tp = cm.ravel()
+    # sensitivity = tp / (tp + fn)
+    # specificity = tn / (tn + fp)
+    # print("Sensitivity:", sensitivity)
+    # print("Specificity:", specificity)
+    
+
+    cm = confusion_matrix(self.y_test, y_pred, normalize='true')
+    cmd = ConfusionMatrixDisplay(cm,display_labels=['0','1','2'])
+    cmd.plot(cmap='Blues')
+    plt.show()   
+    # Generate ROC curve
+    y_prob = self.best_model.predict_proba(self.x_test)[:, 1]
+    fpr, tpr, thresholds = roc_curve(self.y_test, y_prob)
+    roc_auc = auc(fpr, tpr)
+    
+    # Plot ROC curve
+    plt.figure()
+    lw = 2
+    plt.plot(fpr, tpr, color='darkorange',
+             lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+    plt.show()
+
+
+
+
+  
 
 
     
