@@ -26,6 +26,8 @@ class classification_pixels():
                cols_to_drop : list = [None] , # list of columns to be dropped from the dataframe. These columns won't be used to train the model. 
                test_size : float=CONST.TEST_SIZE , #size of test data
                random_state : int = CONST.RANDOM_STATE , #random state , deafult value is set in Cconst_vals module
+               n_jobs : int=CONST.N_JOBS,
+
                ):
     
     self.target_col = target_col
@@ -95,6 +97,10 @@ class classification_pixels():
     #drop null values
     self.df_res.dropna(axis=0,inplace=True)
 
+    # add 1 to class column , as it has -1 values 
+
+    self.df_res[self.target_col] = self.df_res[self.target_col] + 1
+
     x = self.df_res.drop(self.target_col,axis=1)
     y = self.df_res[self.target_col].values
     
@@ -109,7 +115,7 @@ class classification_pixels():
     classifier = xgboost.XGBClassifier()
     
     XGB_random = RandomizedSearchCV(estimator = classifier, 
-                                   param_distributions = self.RANDOM_GRID_XGB,
+                                   param_distributions = CONST.RANDOM_GRID_XGB,
                                    n_iter = CONST.N_ITERATIONS_XGB,
                                    cv = CONST.CV_XGB, 
                                    verbose=CONST.VERBOSE , 

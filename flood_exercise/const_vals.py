@@ -51,13 +51,22 @@ TEST_SIZE = 25
 N_JOBS = -1 
 VERBOSE = 1
 N_ITERATIONS_XGB = 100
-CV_XGB = 5
+CV_XGB = 3
 
 RANDOM_GRID_XGB = {
     "n_estimators": [100,300,500],
     "eta" : [0.3 , 0.5, 0.8 ,1],
-    "gamma":[0.01, 0.1, 1, 5],
-    "max_deth" : [4, 6, 10],
-    "alpha":[0,0.01, 0.1, 0.5],
-    "learning_rate":[0.01, 0.1, 0.5, 1],
+    "gamma":[0.01, 0.1, 1],
+    "max_deth" : [4, 6],
+    "alpha":[0,0.1, 0.5],
+    "learning_rate":[0.01, 0.1, 0.5],
     }
+
+# RANDOM_GRID_XGB = {
+#     "n_estimators": [100,300,500],
+#     "eta" : [0.3 , 0.5, 0.8 ,1],
+#     "gamma":[0.01, 0.1, 1, 5],
+#     "max_deth" : [4, 6, 10],
+#     "alpha":[0,0.01, 0.1, 0.5],
+#     "learning_rate":[0.01, 0.1, 0.5, 1],
+#     }
