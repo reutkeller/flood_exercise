@@ -40,7 +40,9 @@ class classification_pixels():
 
 
     #collect pixels into dataframe 
-    self.df_res = self._collect_pixels_to_dataframe_()
+    self.df = self._collect_pixels_to_dataframe_()
+
+    self.df_res = self._add_spectral_inidices(self.df)
 
     # split into train and test data for ML model
     self.x_train, self.x_test, self.y_train, self.y_test=self._prepare_dataframe_for_train_()
@@ -82,6 +84,13 @@ class classification_pixels():
 
       return df_res
     
+  def _add_spectral_inidices(self , 
+                             df : pd.DataFrame , #dataframe with sentinel -2 data
+                             ):
+    df[CONST.NDVI_STR] = (df[CONST.NIR_BAND] - df[CONST.RED_BAND]) / (df[CONST.NIR_BAND] + df[CONST.RED_BAND])
+    df[CONST.NDWI_STR] = (df[CONST.GREEN_BAND] - df[CONST.NIR_BAND]) / (df[CONST.GREEN_BAND] + df[CONST.NIR_BAND])
+
+    return df
   
   def _prepare_dataframe_for_train_(self):
     
@@ -102,6 +111,8 @@ class classification_pixels():
     # add 1 to class column , as it has -1 values 
 
     self.df_res[self.target_col] = self.df_res[self.target_col] + 1
+
+
 
     x = self.df_res.drop(self.target_col,axis=1)
     y = self.df_res[self.target_col].values
