@@ -4,6 +4,7 @@ _docs/
 _proc/
 
 *.tif
+*.tfrecord
 
 *.bak
 .gitattributes
