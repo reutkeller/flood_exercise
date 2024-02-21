@@ -23,9 +23,11 @@ class ConvertTRF():
     path_save_trf : str , # path to the folder that will store the result trf Records files
     ):
 
-    self.list_of_tif = util.load_list_paths(path = path_to_tif , filter_file = False)[0]
+    self.list_of_tif = util.load_list_paths(path = path_to_tif , filter_file = False)
     self.path_save_trf = path_save_trf
-    self._convert_img_to_feature_(path_to_img = self.list_of_tif)
+
+    for tif in self.list_of_tif:
+      self._convert_img_to_feature_(path_to_img = tif)
     
 
 
@@ -48,7 +50,7 @@ class ConvertTRF():
       for b in bands:
         band_list = tf.train.FloatList(value=df[b].tolist())
         band_vals = tf.train.Feature(float_list=band_list)
-        self.bands_dict[b] = band_vals
+        bands_dict[b] = band_vals
 
       bands_data = tf.train.Features(feature=bands_dict)
       
@@ -56,4 +58,6 @@ class ConvertTRF():
       
       with tf.io.TFRecordWriter(self.path_save_trf + CONST.SPLIT_TILES_NAMES_STR1+file_name + CONST.TRF_FILE_SUFFIX) as tfrecord_writer:
         tfrecord_writer.write(example.SerializeToString())
+
+        print(f'saved tfrecord at :  {self.path_save_trf + CONST.SPLIT_TILES_NAMES_STR1+file_name + CONST.TRF_FILE_SUFFIX}')
 
