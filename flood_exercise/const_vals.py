@@ -26,7 +26,12 @@ DF_ID_COL_NAME = 'id'
 SPLIT_COL_NAME ='split'
 
 # %% ../nbs/01CONSTANTS.ipynb 5
-# task 2 constants
+# task 3 constants
+
+
+
+# %% ../nbs/01CONSTANTS.ipynb 6
+# task 4 constants
 GREEN_BAND =3
 NIR_BAND = 8
 

@@ -55,8 +55,7 @@ class classification_pixels():
   def _collect_pixels_to_dataframe_(self):
     dfs_pixels = []
 
-    #TODO remove the 3!
-    for label_path in self.path_labels[:3]:
+    for label_path in self.path_labels:
       id_path = label_path.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR2)[1]
       
       #find the matching S2 image
@@ -147,41 +146,25 @@ class classification_pixels():
     accuracy = accuracy_score(self.y_test, y_pred)
     print("Accuracy:", accuracy)
 
-    # # Calculate confusion matrix
-    # cm = confusion_matrix(self.y_test, y_pred)
-    # print("Confusion Matrix:")
-    # print(cm)
+    #feature importance
+    importance_scores = self.best_model.feature_importances_
+    feature_names = self.x_test.columns.tolist()
 
-    #    # Calculate sensitivity and specificity
-    # tn, fp, fn, tp = cm.ravel()
-    # sensitivity = tp / (tp + fn)
-    # specificity = tn / (tn + fp)
-    # print("Sensitivity:", sensitivity)
-    # print("Specificity:", specificity)
-    
+        # Plot feature importance
+    plt.figure(figsize=(10, 6))
+    plt.barh(feature_names, importance_scores)
+    plt.xlabel('Feature Importance Score')
+    plt.ylabel('Features')
+    plt.title('Feature Importance')
+    plt.show()
+
 
     cm = confusion_matrix(self.y_test, y_pred, normalize='true')
     cmd = ConfusionMatrixDisplay(cm,display_labels=['0','1','2'])
     cmd.plot(cmap='Blues')
     plt.show()   
-    # Generate ROC curve
-    y_prob = self.best_model.predict_proba(self.x_test)[:, 1]
-    fpr, tpr, thresholds = roc_curve(self.y_test, y_prob)
-    roc_auc = auc(fpr, tpr)
-    
-    # Plot ROC curve
-    plt.figure()
-    lw = 2
-    plt.plot(fpr, tpr, color='darkorange',
-             lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
-    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic')
-    plt.legend(loc="lower right")
-    plt.show()
+
+ 
 
 
 
