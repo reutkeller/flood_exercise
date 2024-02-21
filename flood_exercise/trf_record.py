@@ -23,8 +23,10 @@ class ConvertTRF():
     path_save_trf : str , # path to the folder that will store the result trf Records files
     ):
 
-    self.list_of_tif = util.load_list_paths(path = path_to_tif , filter_file = False)
-
+    self.list_of_tif = util.load_list_paths(path = path_to_tif , filter_file = False)[0]
+    self.path_save_trf = path_save_trf
+    self._convert_img_to_feature_(path_to_img = self.list_of_tif)
+    
 
 
   def _convert_img_to_feature_(self, 
@@ -32,21 +34,26 @@ class ConvertTRF():
                                ):
     with rasterio.open(path_to_img) as src:
 
+      file_name = path_to_img.split(CONST.SPLIT_TILES_NAMES_STR1)[-1].split(CONST.SPLIT_TILES_NAMES_STR3)[0]
+
       bands = src.descriptions
       arr = src.read()
 
       # convert to dataframe in order to convert later to feature #TODO - MAKE IT OWKRS WITH NUMPY ARRAY
       df = pd.DataFrame(arr.reshape([arr.shape[0],-1]).T)
       df.columns = bands
+
+      # self.bands_dict = {key: None for key in bands}
+      bands_dict = {}
+      for b in bands:
+        band_list = tf.train.FloatList(value=df[b].tolist())
+        band_vals = tf.train.Feature(float_list=band_list)
+        self.bands_dict[b] = band_vals
+
+      bands_data = tf.train.Features(feature=bands_dict)
       
-
+      example = tf.train.Example(features=bands_data)
       
-      
-
-    
-
-
-
-
-
+      with tf.io.TFRecordWriter(self.path_save_trf + CONST.SPLIT_TILES_NAMES_STR1+file_name + CONST.TRF_FILE_SUFFIX) as tfrecord_writer:
+        tfrecord_writer.write(example.SerializeToString())
 
