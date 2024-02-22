@@ -29,12 +29,10 @@ The following variables are computed withing the class:
 - probability of water ( % of water pixels in each image, based on NDWI values)  
 -Per train/dev/test sets and for the held-out region (Bolivia)
 
-Functions :
-
-_get_split_data_ -> returns pd.DataFrame with 
 
 ``` python
-1+1
+ImgsStatistics(path_to_imgs = r'D:\git\flood_exercise\S2',
+                path_to_split_file= r'D:\git\flood_exercise\split\flood_handlabeled' )
 ```
 
     2
