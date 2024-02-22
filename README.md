@@ -47,10 +47,33 @@ B3-B8 / B3 + B8
 
 - calculate water probability per image - calclate the percentage of water pixels in each image based on NDWI threshold.
 
-
+``` python
+instance = ndwi(path_to_s2_tiles = r"D:\git\flood_exercise\S2",
+                path_to_labeled_tiles= r"D:\git\flood_exercise\S2_HANDLABELED")
+```
 
 **CAUTION: The images provided are in L1-C (top of atmosphere). This representation does not accurately reflect surface reflectance, potentially impacting the precision of water pixel detection and compromising the results of any models.**
 
+## 06 TFRecord 
+
+This class is designed to convert GeoTIFF files into TFRecord format.
+``` python
+instance =  ConvertTRF(path_to_tif= r"D:\git\flood_exercise\S2" ,
+                       path_save_trf= r"D:\git\flood_exercise\RESULTS\trfRecords")
+```
+
+## 06 Train ML
+This class is designed to collect pixels from images and train ML model with XGB algorithm. This is just a brginning of training of ML model, more algrithms should be tested and also more data should be used in order to create ML model. 
 
 
+``` python
+instance = classification_pixels(path_imgs_str=r"D:\git\flood_exercise\S2",
+                                 path_labels_str=r"D:\git\flood_exercise\S2_HANDLABELED",
+                                 target_col = 'None',
+                                 cols_to_drop= ['qc'],
+                                 test_size= 0.25,
+                                 random_state = 42,
+
+                                 )
+```
 
