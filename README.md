@@ -47,3 +47,10 @@ B3-B8 / B3 + B8
 
 - calculate water probability per image - calclate the percentage of water pixels in each image based on NDWI threshold.
 
+
+
+**CAUTION: The images provided are in L1-C (top of atmosphere). This representation does not accurately reflect surface reflectance, potentially impacting the precision of water pixel detection and compromising the results of any models.**
+
+
+
+
