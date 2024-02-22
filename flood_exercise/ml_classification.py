@@ -87,8 +87,8 @@ class classification_pixels():
   def _add_spectral_inidices(self , 
                              df : pd.DataFrame , #dataframe with sentinel -2 data
                              ):
-    df[CONST.NDVI_STR] = (df[CONST.NIR_BAND] - df[CONST.RED_BAND]) / (df[CONST.NIR_BAND] + df[CONST.RED_BAND])
-    df[CONST.NDWI_STR] = (df[CONST.GREEN_BAND] - df[CONST.NIR_BAND]) / (df[CONST.GREEN_BAND] + df[CONST.NIR_BAND])
+    df[CONST.NDVI_STR] = (df[CONST.NIR_BAND_NAME] - df[CONST.RED_BAND_NAME]) / (df[CONST.NIR_BAND_NAME] + df[CONST.RED_BAND_NAME])
+    df[CONST.NDWI_STR] = (df[CONST.GREEN_BAND_NAME] - df[CONST.NIR_BAND_NAME]) / (df[CONST.GREEN_BAND_NAME] + df[CONST.NIR_BAND_NAME])
 
     return df
   
@@ -175,12 +175,4 @@ class classification_pixels():
     cmd.plot(cmap='Blues')
     plt.show()   
 
- 
-
-
-
-
-  
-
-
-    
+   

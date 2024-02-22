@@ -18,14 +18,20 @@ pip install flood_exercise
 
 ## The use of NBDEV
 
-This repository utilizes nbdev for development purposes. nbdev facilitates working with Jupyter notebooks and exporting them to .py files, enabling seamless module import and export within the Jupyter environment. Explore additional advantages of using nbdev. [Click here for more information](https://nbdev.fast.ai/tutorials/tutorial.html)
+This repository utilizes nbdev for development purposes. nbdev facilitates working with Jupyter notebooks and exporting them to .py files, enabling seamless module import and export within the Jupyter environment. The .py files are under "flood_exercise" folder, and the jupyter notebooks can be found in the "nbs" folder.  Explore additional advantages of using nbdev. [Click here for more information](https://nbdev.fast.ai/tutorials/tutorial.html)
 
 ## basic statistics
 
-The purpose of this module is to load geotiffs files from specific path and caluclate statistics for them.
+The purpose of this module is to compute the basic statistics of the the dataset. 
+The following variables are computed withing the class:
+- number of images  
+- per channel mean and standard devation  
+- probability of water ( % of water pixels in each image, based on NDWI values)  
+-Per train/dev/test sets and for the held-out region (Bolivia)
 
-These are the functions that can be used 
-_get_split_data_ 
+Functions :
+
+_get_split_data_ -> returns pd.DataFrame with 
 
 ``` python
 1+1
