@@ -20,7 +20,7 @@ pip install flood_exercise
 
 This repository utilizes nbdev for development purposes. nbdev facilitates working with Jupyter notebooks and exporting them to .py files, enabling seamless module import and export within the Jupyter environment. The .py files are under "flood_exercise" folder, and the jupyter notebooks can be found in the "nbs" folder.  Explore additional advantages of using nbdev. [Click here for more information](https://nbdev.fast.ai/tutorials/tutorial.html)
 
-## basic statistics
+## 03 basic statistics
 
 The purpose of this module is to compute the basic statistics of the the dataset. 
 The following variables are computed withing the class:
@@ -35,4 +35,15 @@ ImgsStatistics(path_to_imgs = r'D:\git\flood_exercise\S2',
                 path_to_split_file= r'D:\git\flood_exercise\split\flood_handlabeled' )
 ```
 
-    2
+
+## 04 NDWI
+This module computes per-pixels probability of eater using the NDWI index.
+
+- calculate NDWI per image based on the formula :
+``` python  
+B3-B8 / B3 + B8
+```
+- calculate optimal NDWI threshold - finds the maximum and minimum value of NDWI values based on the hand labels data. 
+
+- calculate water probability per image - calclate the percentage of water pixels in each image based on NDWI threshold.
+
