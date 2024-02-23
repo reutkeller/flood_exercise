@@ -18,7 +18,7 @@ pip install flood_exercise
 
 ## The use of NBDEV
 
-This repository utilizes nbdev for development purposes. nbdev facilitates working with Jupyter notebooks and exporting them to .py files, enabling seamless module import and export within the Jupyter environment. The .py files are under "flood_exercise" folder, and the jupyter notebooks can be found in the "nbs" folder.  Explore additional advantages of using nbdev. [Click here for more information](https://nbdev.fast.ai/tutorials/tutorial.html)
+This repository utilizes nbdev for development purposes. nbdev facilitates working with Jupyter notebooks and exporting them to .py files, enabling seamless module import and export within the Jupyter environment. The .py files are under "flood_exercise" folder, and the jupyter notebooks can be found in the "nbs" folder.  You can explore additional advantages of using nbdev [Click here for more information](https://nbdev.fast.ai/tutorials/tutorial.html)
 
 ## 03 basic statistics
 
@@ -63,7 +63,7 @@ instance =  ConvertTRF(path_to_tif= r"D:\git\flood_exercise\S2" ,
 ```
 
 ## 06 Train ML
-This class is designed to collect pixels from images and train ML model with XGB algorithm. This is just a brginning of training of ML model, more algrithms should be tested and also more data should be used in order to create ML model. 
+This class is designed to extracting pixels from images and train ML model with XGB algorithm.  However, it's just the beginning. Further experimentation with other algorithms and more data is essential for refining the model. 
 
 
 ``` python
