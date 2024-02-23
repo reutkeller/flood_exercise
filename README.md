@@ -63,7 +63,7 @@ instance =  ConvertTRF(path_to_tif= r"D:\git\flood_exercise\S2" ,
 ```
 
 ## 06 Train ML
-This class is designed to extracting pixels from images and train ML model with XGB algorithm.  However, it's just the beginning. Further experimentation with other algorithms and more data is essential for refining the model. 
+This class is designed to extracting pixels from images and train ML model with XGB algorithm. I have aded NDWI and NDVI to train the model, but it did not improve the results much. I assume that the reason for that is using L1-C images. However, it's just the beginning. Further experimentation with other algorithms and additional data  is essential for refining the model. 
 
 
 ``` python
